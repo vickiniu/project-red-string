@@ -38,27 +38,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("error initializing db from schema: %v\n", err)
 	}
-
-	// // Check to see if DB exists — if not, create and set schema
-	// var x interface{}
-	// const q = `select true from pg_database where datname = $1`
-	// err = db.QueryRow(q, dbName).Scan(&x)
-	// if err == sql.ErrNoRows {
-	// 	_, err = db.Exec("CREATE DATABASE " + dbName)
-	// 	if err != nil {
-	// 		log.Fatalf("error creating database: %v", err)
-	// 	}
-	// 	schema, err := ioutil.ReadFile(schemaFile)
-	// 	if err != nil {
-	// 		log.Fatalf("error reading schema: %v", err)
-	// 	}
-	// 	_, err = db.Exec(string(schema))
-	// 	if err != nil {
-	// 		log.Fatalf("error setting db schema: %v", err)
-	// 	}
-	// } else if err != nil {
-	// 	log.Fatalf("error querying pg_database: %v", err)
-	// }
 }
 
 // envString returns the value of the named environment variable.
