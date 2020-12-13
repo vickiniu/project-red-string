@@ -41,6 +41,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// TODO(vicki): edit the CFB names for special cases
 }
 
 func insertAnnotation(ctx context.Context, db *sql.DB, a annotation) error {

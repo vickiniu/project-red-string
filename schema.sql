@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS individuals (
     -- cfb_name is the name formatted to match CFB
     -- filings in "Last, First" format
     cfb_name text NOT NULL,
+    -- TODO: make a search_name column (?)
     zip text,
     updated_ts timestamp NOT NULL,
     role text,
@@ -40,9 +41,8 @@ CREATE TABLE IF NOT EXISTS individual_associations (
 
 CREATE TABLE IF NOT EXISTS contributions (
     id text DEFAULT nextval('next_id') PRIMARY KEY,
-    -- seqno orders contributions by date in ascending order
-    -- at time of ingestion
-    seqno integer NOT NULL,
+    -- reference number from CFB
+    refno text NOT NULL,
     -- amount denominated in cents
     amount integer NOT NULL,
     date timestamp NOT NULL,
@@ -55,11 +55,23 @@ CREATE TABLE IF NOT EXISTS contributions (
     recipient_name text NOT NULL,
     -- All recipients should have annotations, so we will
     -- always have individual IDs for recipients
-    recipient_id text NOT NULL,
+    recipient_id text,
+    -- CFB gives recipient a recipient ID, so note this.
+    cfb_recipient_id text NOT NULL,
 
     -- Other contribution data from CFB
-    address text NOT NULL,
-    employer text NOT NULL,
-    occupation text NOT NULL,
-    type text NOT NULL
+    election TEXT NOT NULL,
+    office_cd TEXT,
+    can_class TEXT,
+    committee TEXT,
+    filing INT,
+    schedule TEXT,
+    c_code TEXT,
+
+    borough text,
+    city text NOT NULL,
+    state text NOT NULL,
+    zip text NOT NULL,
+    occupation text,
+    employer_name text
 );
