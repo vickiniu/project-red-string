@@ -17,6 +17,10 @@ type config struct {
 	airtableAPIKey string
 }
 
+// const cfbNames := map[string]string {
+// 	""
+// }
+
 func main() {
 	ctx := context.Background()
 	cfg := config{

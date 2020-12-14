@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/csv"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -112,7 +113,7 @@ func main() {
 	for n := range unmatchedNames {
 		names = append(names, n)
 	}
-	err = ioutil.WriteFile("unmatched_names.txt", []byte(strings.Join(names, ", ")), 0644)
+	err = ioutil.WriteFile("unmatched_names.txt", []byte(strings.Join(names, "\n")), 0644)
 	if err != nil {
 		log.Println("unable to write file")
 		log.Println(names)
@@ -165,7 +166,16 @@ func handleRecord(ctx context.Context, db *sql.DB, record []string) error {
 			const q = `SELECT id FROM individuals WHERE cfb_name = $1`
 			err := db.QueryRowContext(ctx, q, val).Scan(&recipID)
 			if err != nil {
-				unmatchedNames[val] = true
+				// Try again, stripping the last space
+				parts := strings.Split(val, " ")
+				trimmedVal := strings.Join(parts[0:len(parts)-1], " ")
+				const q = `SELECT id FROM individuals WHERE cfb_name = $1`
+				err := db.QueryRowContext(ctx, q, trimmedVal).Scan(&recipID)
+				if err != nil {
+					unmatchedNames[val] = true
+					fmt.Println(val)
+					fmt.Println(trimmedVal)
+				}
 			}
 			c.recipientID = recipID
 		case "committee":
