@@ -167,10 +167,12 @@ func resperr(w http.ResponseWriter, r *http.Request, err error) {
 	// TODO(vicki): better error instrumentation + logging
 	log.Println("error: ", err)
 	w.WriteHeader(500)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(err)
 }
 
 func respsuccess(w http.ResponseWriter, r *http.Request, b interface{}) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(b)
 }
