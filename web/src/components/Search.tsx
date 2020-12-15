@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
+import { Link } from "react-router-dom";
 
 interface ResultsListProps {
     data: SearchResult[] | undefined;
@@ -16,7 +17,13 @@ const ResultsList = (props: ResultsListProps) => {
     return data ? (
         <ul>
             {data.map((d: SearchResult) => {
-                return <li key={d.id}>{d.firstName + " " + d.lastName}</li>;
+                return (
+                    <li key={d.id}>
+                        <Link to={`individual/${d.id}`}>
+                            {d.firstName + " " + d.lastName}
+                        </Link>
+                    </li>
+                );
             })}
         </ul>
     ) : (
