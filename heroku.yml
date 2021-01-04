@@ -2,3 +2,6 @@ build:
     docker:
         web: client/Dockerfile
         server: server/Dockerfile
+run:
+    web: cd client && npm start
+    server: cd server && go run main.go
