@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// TODO(vicki): actually configure
-	port := ":8080"
+	port := envString("LISTEN", ":8080")
 	dbURL := envString("DATABASE_URL", "postgres:///redstring?sslmode=disable")
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {

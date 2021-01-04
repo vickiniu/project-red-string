@@ -197,7 +197,7 @@ func handleRecord(ctx context.Context, db *sql.DB, record []string) error {
 			const q = `SELECT id FROM individual WHERE cfb_name = $1`
 			err := db.QueryRowContext(ctx, q, val).Scan(&contributorID)
 			if err != nil {
-				// Do nothing
+				// do nothing
 			}
 			c.contributorID = contributorID
 		case "c_code":

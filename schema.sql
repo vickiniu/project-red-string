@@ -48,15 +48,13 @@ CREATE TABLE IF NOT EXISTS contributions (
     date timestamp NOT NULL,
     -- contributor_name as reported in CFB filing
     contributor_name text NOT NULL,
-    -- optimistically match the contributor to 
-    -- an individual
-    contributor_id text,
+    -- contributor id (individuals table)
+    contributor_id text NOT NULL,
     -- recipient_name as reported in CFB filing
     recipient_name text NOT NULL,
-    -- All recipients should have annotations, so we will
-    -- always have individual IDs for recipients
+    -- recipient id (individuals table)
     recipient_id text,
-    -- CFB gives recipient a recipient ID, so note this.
+    -- CFB gives each recipient a recipient ID, so note this.
     cfb_recipient_id text NOT NULL,
 
     -- Other contribution data from CFB
