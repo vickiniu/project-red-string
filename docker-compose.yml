@@ -1,6 +1,6 @@
 version: "3"
 services:
-    frontend:
+    web:
         container_name: red_string_web
         build:
             context: ./client
@@ -20,3 +20,7 @@ services:
             - "5000:5000"
         volumes:
             - ./server:/app
+    db:
+        image: postgres:latest
+        ports:
+            - "5432:5432"
