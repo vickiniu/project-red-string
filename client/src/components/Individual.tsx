@@ -38,7 +38,7 @@ const Individual = () => {
 
     useEffect(() => {
         // Get individual
-        fetch("http://localhost:8080/get-individual", {
+        fetch("/get-individual", {
             method: "POST",
             body: JSON.stringify({
                 id: individualID,
@@ -66,7 +66,7 @@ const Individual = () => {
             });
 
         // Get contributions received
-        fetch("http://localhost:8080/individual-contributions-received", {
+        fetch("/individual-contributions-received", {
             method: "POST",
             body: JSON.stringify({
                 id: individualID,
@@ -93,7 +93,7 @@ const Individual = () => {
             });
 
         // Get contributions given
-        fetch("http://localhost:8080/individual-contributions-given", {
+        fetch("/individual-contributions-given", {
             method: "POST",
             body: JSON.stringify({
                 id: individualID,

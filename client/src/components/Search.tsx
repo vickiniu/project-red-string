@@ -37,7 +37,7 @@ const Search = () => {
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         console.log(event.target.value);
         // TODO(vicki): put in env variable for host
-        fetch("http://localhost:8080/search-individuals", {
+        fetch("search-individuals", {
             method: "POST",
             body: JSON.stringify({
                 query: event.target.value,
