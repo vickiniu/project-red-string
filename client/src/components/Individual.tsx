@@ -38,7 +38,7 @@ const Individual = () => {
 
     useEffect(() => {
         // Get individual
-        fetch("/get-individual", {
+        fetch(process.env.REACT_APP_API_URL + "/get-individual", {
             method: "POST",
             body: JSON.stringify({
                 id: individualID,
@@ -66,12 +66,16 @@ const Individual = () => {
             });
 
         // Get contributions received
-        fetch("/individual-contributions-received", {
-            method: "POST",
-            body: JSON.stringify({
-                id: individualID,
-            }),
-        })
+        fetch(
+            process.env.REACT_APP_API_URL +
+                "/individual-contributions-received",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    id: individualID,
+                }),
+            }
+        )
             .then((resp) => resp.json())
             .then((data) => {
                 setContribReceived(
@@ -93,12 +97,15 @@ const Individual = () => {
             });
 
         // Get contributions given
-        fetch("/individual-contributions-given", {
-            method: "POST",
-            body: JSON.stringify({
-                id: individualID,
-            }),
-        })
+        fetch(
+            process.env.REACT_APP_API_URL + "/individual-contributions-given",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    id: individualID,
+                }),
+            }
+        )
             .then((resp) => resp.json())
             .then((data) => {
                 setContribGiven(
