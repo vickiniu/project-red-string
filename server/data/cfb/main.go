@@ -165,15 +165,19 @@ func handleRecord(ctx context.Context, db *sql.DB, record []string) error {
 			var recipID string
 			const q = `SELECT id FROM individuals WHERE cfb_name = $1`
 			err := db.QueryRowContext(ctx, q, val).Scan(&recipID)
-			if err != nil {
+			if err == sql.ErrNoRows {
 				// Try again, stripping the last space
 				parts := strings.Split(val, " ")
 				trimmedVal := strings.Join(parts[0:len(parts)-1], " ")
 				const q = `SELECT id FROM individuals WHERE cfb_name = $1`
 				err := db.QueryRowContext(ctx, q, trimmedVal).Scan(&recipID)
-				if err != nil {
+				if err == sql.ErrNoRows {
 					unmatchedNames[val] = true
+				} else if err != nil {
+					return errors.Wrap(err, "matching recipient")
 				}
+			} else if err != nil {
+				errors.Wrap(err, "matching recipient")
 			}
 			c.recipientID = recipID
 		case "committee":
@@ -192,12 +196,24 @@ func handleRecord(ctx context.Context, db *sql.DB, record []string) error {
 			c.date = d
 		case "contributor_name":
 			// Check if contributor is an individual in the DB
+			// TODO: handle casing as well
 			c.contributorName = val
 			var contributorID string
-			const q = `SELECT id FROM individual WHERE cfb_name = $1`
+			const q = `SELECT id FROM individuals WHERE cfb_name = $1`
 			err := db.QueryRowContext(ctx, q, val).Scan(&contributorID)
-			if err != nil {
-				// do nothing
+			if err == sql.ErrNoRows {
+				// Try again, stripping the last space
+				parts := strings.Split(val, " ")
+				trimmedVal := strings.Join(parts[0:len(parts)-1], " ")
+				const q = `SELECT id FROM individuals WHERE cfb_name = $1`
+				err := db.QueryRowContext(ctx, q, trimmedVal).Scan(&contributorID)
+				if err == sql.ErrNoRows {
+					return nil
+				} else if err != nil {
+					return errors.Wrap(err, "matching contributor")
+				}
+			} else if err != nil {
+				return errors.Wrap(err, "matching contributor")
 			}
 			c.contributorID = contributorID
 		case "c_code":
