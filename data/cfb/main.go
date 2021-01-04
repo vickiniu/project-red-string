@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -135,6 +134,7 @@ type cfbrecord struct {
 	refNo           string
 	date            time.Time
 	contributorName string
+	contributorID   string
 	cCode           string
 	borough         string
 	city            string
@@ -173,8 +173,6 @@ func handleRecord(ctx context.Context, db *sql.DB, record []string) error {
 				err := db.QueryRowContext(ctx, q, trimmedVal).Scan(&recipID)
 				if err != nil {
 					unmatchedNames[val] = true
-					fmt.Println(val)
-					fmt.Println(trimmedVal)
 				}
 			}
 			c.recipientID = recipID
@@ -193,7 +191,15 @@ func handleRecord(ctx context.Context, db *sql.DB, record []string) error {
 			}
 			c.date = d
 		case "contributor_name":
+			// Check if contributor is an individual in the DB
 			c.contributorName = val
+			var contributorID string
+			const q = `SELECT id FROM individual WHERE cfb_name = $1`
+			err := db.QueryRowContext(ctx, q, val).Scan(&contributorID)
+			if err != nil {
+				// Do nothing
+			}
+			c.contributorID = contributorID
 		case "c_code":
 			c.cCode = val
 		case "borough":
@@ -234,6 +240,7 @@ func upsertRecord(ctx context.Context, db *sql.DB, c cfbrecord) error {
 			amount,
 			date,
 			contributor_name,
+			contributor_id,
 			recipient_name,
 			recipient_id,
 			cfb_recipient_id,
@@ -251,7 +258,7 @@ func upsertRecord(ctx context.Context, db *sql.DB, c cfbrecord) error {
 			occupation,
 			employer_name
 		) VALUES (
-			$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20
+			$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21
 		)
 	`
 		_, err := db.ExecContext(
@@ -261,6 +268,7 @@ func upsertRecord(ctx context.Context, db *sql.DB, c cfbrecord) error {
 			c.amount,
 			c.date,
 			c.contributorName,
+			c.contributorID,
 			c.recipientName,
 			c.recipientID,
 			c.cfbRecipientID,
